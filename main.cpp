@@ -4,6 +4,9 @@ using namespace std;
 
 const int keylen=50;
 
+// this array includes all the keywords based on cpp code and
+// is used in the function to check for the keywords 
+
 char keyWords[keylen][15] = {
   "asm","else","Auto","bool","enum","Break","etern","Case","float",
   "Catch","for","Char","friend","Class","goto","Const","if",
@@ -23,6 +26,10 @@ char keyWords[keylen][15] = {
   "switch",
 };
 
+// this array includes all the dataType based on cpp code and
+// is used in the function to check for the dataType to differenciate between both this and
+//keywords 
+
 const int dataTypeLen=15;
 char dataType[dataTypeLen][10]={
    "int", "int*",
@@ -35,8 +42,10 @@ char dataType[dataTypeLen][10]={
    "void",
 };
 
-
-///////harsh mishra
+/////////////////////////////
+//this includes all the array implementation of the 
+//if statemenets used to check for the different
+////////////////////////////
 const int delimiterlen=16;
 
 char delimiter[delimiterlen][2]={" ","+","-","*",
@@ -57,8 +66,7 @@ char oplen[operatorlen][2]={"+","-","*",
 const int integerLen=10;
 char integer[integerLen][2]={"0","1","2","3","4","5","6","7","8","9"};
 
-
-/////////
+//////////////////////////////////////////
 
 // Returns 'true' if the character is a DELIMITER.
 bool isDelimiter(char ch)
@@ -154,7 +162,7 @@ char* subString(char* str, int left, int right)
     return (subStr);
 }
 
-// Parsing the input STRING.
+// Parsing the input STRING to convert into Token
 string getToken(string s)
 {
 
@@ -225,6 +233,8 @@ string getToken(string s)
     // token.erase(token.end() - 1, token.end());
     return token;
 }
+
+//remove all the comments from the string of cpp code
 string removeComments(string prgm)
 {
     int n = prgm.length();
@@ -255,12 +265,12 @@ string removeComments(string prgm)
     return res;
 }
 
-
-string inputFileName(string file)
+//takes file input while parsing the 
+string inputFileName(string fileName)
 {
  	ifstream file1;
     int length1;
-    file1.open(file);
+    file1.open(fileName);
     file1.seekg(0, std::ios::end);
     length1 = file1.tellg();
     file1.seekg(0, std::ios::beg);
@@ -402,7 +412,7 @@ string addFunctionIndicator(string s) {
 
 //for seperating printed code snippets
 void printDeclaration(string a) {
-    cout<< endl << "/////////////////////////////////  " + a << endl;
+    cout<< endl <<endl << "/////////////////////////////////  " + a << endl;
 }
 void divide(){
     cout << endl << "/////////////////////"<<endl;
