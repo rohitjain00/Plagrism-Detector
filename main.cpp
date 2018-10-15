@@ -20,7 +20,7 @@ char keyWords[keylen][15] = {
   "static","cout<<",
   "cin>>","volatile",
   "struct","while",
-  "switch"
+  "switch",
 };
 
 const int dataTypeLen=15;
@@ -221,6 +221,8 @@ string getToken(string s)
             left = right;
         }
     }
+    //for removing the extra I in the token
+    // token.erase(token.end() - 1, token.end());
     return token;
 }
 string removeComments(string prgm)
@@ -328,24 +330,121 @@ string removeSpacesAndNewlines(string &str)
     str.erase(remove(str.begin(),str.end(),'\n'), str.end());
     return str;
 }
-// DRIVER FUNCTION
+
+int numberOfFunctionInToken(string s) {
+    int total = 0;
+    int n = s.length();  
+    // declaring character array 
+    char str[n+1];
+    strcpy(str,s.c_str());
+
+    for (int i = 0; i < n; i++) {
+        if (str[i] == 'I' && str[i+1] == '(') {
+            total++;
+        }
+    }
+    return total;
+}
+
+string addFunctionIndicator(string s) {
+    int n = s.length();  
+    // declaring character array 
+    int totalFunction = numberOfFunctionInToken(s);
+    char str[n+totalFunction];
+    strcpy(str,s.c_str());
+
+    int maxFunction = 3;
+    char newStr[n+maxFunction];  
+    int newStrPointer = 0;
+
+    stack<char> st;
+    char x;
+    bool isFunction = false;
+
+    for (int i = 0; i < n; i++) {
+        
+        if (str[i] == 'I' && str[i+1] == '(') {
+            isFunction = true;
+            newStr[newStrPointer] = 'I';
+            i++;
+            newStrPointer++;
+            newStr[newStrPointer] = 'F';
+            newStrPointer++;
+        }
+
+        if(isFunction && str[i] == '{' ) {
+            st.push(str[i]);
+            // cout << "PUSHING"<<endl;
+        }
+
+        if (isFunction && str[i] == '}') {
+            // cout << "POPPING"<<endl;
+            x = st.top();
+            st.pop();   
+        }
+        if (st.empty() && (str[i] == '}' && isFunction)) {
+            newStr[newStrPointer] = 'F';
+            // cout << "POPPING With F added"<<endl;
+            newStrPointer++;
+            // newStr[newStrPointer] = '}';
+            // newStrPointer++;
+            isFunction = false;
+        }
+        newStr[newStrPointer] = str[i];
+        if (i <= n-1)
+            newStrPointer++;
+    }
+    // cout << st.empty() <<endl;
+    // cout << isFunction <<endl;
+    // cout << st.top() <<endl;
+    return newStr;
+}
+
+//for seperating printed code snippets
+void printDeclaration(string a) {
+    cout<< endl << "/////////////////////////////////  " + a << endl;
+}
+void divide(){
+    cout << endl << "/////////////////////"<<endl;
+}
 
 int main()
 {
      // maximum legth of string is 100 here
+    printDeclaration("Input FIle");
     string prgm1=inputFileName("file1.cpp");//taking file into a string
+    string prgm2=inputFileName("file2.cpp");//taking file into a string
+    cout << prgm1 << endl;
+    divide();
+    cout << prgm2 << endl;
 
-    string actualPrgm=removeComments(prgm1);//removing program
-    cout<<actualPrgm<<endl;
 
-    string inlineString=removeSpacesAndNewlines(actualPrgm); //Remove spaces and newline chars for inline string
-    cout<<inlineString<<endl;
+    printDeclaration("Comments Removed");
+    string actualPrgm1=removeComments(prgm1);//removing program
+    string actualPrgm2=removeComments(prgm2);//removing program
+    cout<<actualPrgm1<<endl;
+    divide();
+    cout<<actualPrgm2<<endl;
 
-    string tempToken=getToken(inlineString); // Getting temporary token
-    cout<<tempToken;
+    printDeclaration("Spaces and NewLine Removed");
+    string inlineString1=removeSpacesAndNewlines(actualPrgm1); //Remove spaces and newline chars for inline string
+    string inlineString2=removeSpacesAndNewlines(actualPrgm2); //Remove spaces and newline chars for inline string
+    cout<<inlineString1<<endl;
+    divide();
+    cout<<inlineString2<<endl;
+
+
+    printDeclaration("Converted to tokens");
+    string tempToken1=getToken(inlineString1); // Getting temporary token
+    string tempToken2=getToken(inlineString2); // Getting temporary token
+    cout<<tempToken1 <<endl;
+    divide();
+    cout<<tempToken2 <<endl;
 
 //    string token=stringParse(tempToken); //Final Parsing of the string
   //  cout<<token;
+    printDeclaration("Testing FUnction Add Function");
+    cout << addFunctionIndicator(tempToken2)<<endl;
 
     return 0;
 }
