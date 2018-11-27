@@ -5,7 +5,7 @@ using namespace std;
 const int keylen=50;
 
 // this array includes all the keywords based on cpp code and
-// is used in the function to check for the keywords 
+// is used in the function to check for the keywords
 
 char keyWords[keylen][15] = {
   "asm","else","Auto","bool","enum","Break","etern","Case","float",
@@ -26,11 +26,10 @@ char keyWords[keylen][15] = {
   "switch",
 };
 
-// this array includes all the dataType based on cpp code and
-// is used in the function to check for the dataType to differenciate between both this and
-//keywords 
-
 const int dataTypeLen=15;
+// this array includes all the dataType based on cpp code and
+// is used in the function to check for the dataType to differentiate between both this and
+//keywords
 char dataType[dataTypeLen][10]={
    "int", "int*",
    "char","char*",
@@ -42,12 +41,9 @@ char dataType[dataTypeLen][10]={
    "void",
 };
 
-/////////////////////////////
-//this includes all the array implementation of the 
-//if statemenets used to check for the different
-////////////////////////////
 const int delimiterlen=16;
-
+//this includes all the array implementation of the
+//if statements used to check for the different
 char delimiter[delimiterlen][2]={" ","+","-","*",
                       "/",",",";",">",
                       "<","=","(",")",
@@ -65,8 +61,6 @@ char oplen[operatorlen][2]={"+","-","*",
 
 const int integerLen=10;
 char integer[integerLen][2]={"0","1","2","3","4","5","6","7","8","9"};
-
-//////////////////////////////////////////
 
 // Returns 'true' if the character is a DELIMITER.
 bool isDelimiter(char ch)
@@ -265,7 +259,7 @@ string removeComments(string prgm)
     return res;
 }
 
-//takes file input while parsing the 
+//takes file input to covert file data into string for parsing further.
 string inputFileName(string fileName)
 {
  	ifstream file1;
@@ -280,17 +274,12 @@ string inputFileName(string fileName)
   	return buf1;
 }
 
+//Function to remove extra spaces and white lines.
 string removeSpacesAndNewlines(string &str)
 {
     // n is length of the original string
     int n = str.length();
-
-    // i points to next postion to be filled in
-    // output string/ j points to next character
-    // in the original string
     int i = 0, j = -1;
-
-    // flag that sets to true is space is found
     bool spaceFound = false;
 
     // Handles leading spaces
@@ -302,28 +291,17 @@ string removeSpacesAndNewlines(string &str)
         // if current characters is non-space
         if (str[j] != ' ')
         {
-            // remove preceding spaces before dot,
-            // comma & question mark
             if ((str[j] == '.' || str[j] == ',' ||
                  str[j] == '?') && i - 1 >= 0 &&
                  str[i - 1] == ' ')
                 str[i - 1] = str[j++];
 
             else
-                // copy current character at index i
-                // and increment both i and j
                 str[i++] = str[j++];
-
-            // set space flag to false when any
-            // non-space character is found
-            spaceFound = false;
+                spaceFound = false;
         }
-        // if current character is a space
         else if (str[j++] == ' ')
         {
-            // If space is encountered for the first
-            // time after a word, put one space in the
-            // output and set space flag to true
             if (!spaceFound)
             {
                 str[i++] = ' ';
@@ -343,8 +321,7 @@ string removeSpacesAndNewlines(string &str)
 
 int numberOfFunctionInToken(string s) {
     int total = 0;
-    int n = s.length();  
-    // declaring character array 
+    int n = s.length();
     char str[n+1];
     strcpy(str,s.c_str());
 
@@ -356,15 +333,15 @@ int numberOfFunctionInToken(string s) {
     return total;
 }
 
+//Function to add F for functions in the token string.
 string addFunctionIndicator(string s) {
-    int n = s.length();  
-    // declaring character array 
+    int n = s.length();
     int totalFunction = numberOfFunctionInToken(s);
     char str[n+totalFunction];
     strcpy(str,s.c_str());
 
     int maxFunction = 3;
-    char newStr[n+maxFunction];  
+    char newStr[n+maxFunction];
     int newStrPointer = 0;
 
     stack<char> st;
@@ -372,7 +349,7 @@ string addFunctionIndicator(string s) {
     bool isFunction = false;
 
     for (int i = 0; i < n; i++) {
-        
+
         if (str[i] == 'I' && str[i+1] == '(') {
             isFunction = true;
             newStr[newStrPointer] = 'I';
@@ -384,33 +361,25 @@ string addFunctionIndicator(string s) {
 
         if(isFunction && str[i] == '{' ) {
             st.push(str[i]);
-            // cout << "PUSHING"<<endl;
         }
 
         if (isFunction && str[i] == '}') {
-            // cout << "POPPING"<<endl;
             x = st.top();
-            st.pop();   
+            st.pop();
         }
         if (st.empty() && (str[i] == '}' && isFunction)) {
             newStr[newStrPointer] = 'F';
-            // cout << "POPPING With F added"<<endl;
             newStrPointer++;
-            // newStr[newStrPointer] = '}';
-            // newStrPointer++;
             isFunction = false;
         }
         newStr[newStrPointer] = str[i];
         if (i <= n-1)
             newStrPointer++;
     }
-    // cout << st.empty() <<endl;
-    // cout << isFunction <<endl;
-    // cout << st.top() <<endl;
     return newStr;
 }
 
-//for seperating printed code snippets
+//for separating printed code snippets
 void printDeclaration(string a) {
     cout<< endl <<endl << "/////////////////////////////////  " + a << endl;
 }
@@ -418,9 +387,59 @@ void divide(){
     cout << endl << "/////////////////////"<<endl;
 }
 
+//to find the minimum between the three numbers
+int min(int x, int y, int z)
+{
+   return min(min(x, y), z);
+}
+
+//Returns the cost of converting string 1 to string 2 by insert, remove or replace.
+int editDistDP(string str1, string str2, int m, int n)
+{
+    // Create a table to store results of subproblems
+    int dp[m+1][n+1];
+
+    for (int i=0; i<=m; i++)
+    {
+        for (int j=0; j<=n; j++)
+        {
+            // If first string is empty, only option is to
+            // insert all characters of second string
+            if (i==0)
+                dp[i][j] = j;  // Min. operations = j
+
+            // If second string is empty, only option is to
+            // remove all characters of second string
+            else if (j==0)
+                dp[i][j] = i; // Min. operations = i
+
+            // If last characters are same, ignore last char
+            // and recur for remaining string
+            else if (str1[i-1] == str2[j-1])
+                dp[i][j] = dp[i-1][j-1];
+
+            // If the last character is different, consider all
+            // possibilities and find the minimum
+            else
+                dp[i][j] = 1 + min(dp[i][j-1],  // Insert
+                                   dp[i-1][j],  // Remove
+                                   dp[i-1][j-1]); // Replace
+        }
+    }
+    return dp[m][n];
+}
+
+//Returns percentage of plagiarism for the two files taking numerator and denominator as input.
+double plagiarismCalculator(int den, int num)
+{
+    double denom = (double) den;
+    double numer = (double) num;
+    return (numer*100)/denom;
+}
+
+//Main Function
 int main()
 {
-     // maximum legth of string is 100 here
     printDeclaration("Input FIle");
     string prgm1=inputFileName("file1.cpp");//taking file into a string
     string prgm2=inputFileName("file2.cpp");//taking file into a string
@@ -451,10 +470,22 @@ int main()
     divide();
     cout<<tempToken2 <<endl;
 
-//    string token=stringParse(tempToken); //Final Parsing of the string
-  //  cout<<token;
+
     printDeclaration("Testing FUnction Add Function");
-    cout << addFunctionIndicator(tempToken2)<<endl;
+    string finalToken1=addFunctionIndicator(tempToken1); //Getting final token
+    string finalToken2=addFunctionIndicator(tempToken2); //Getting final token
+    cout<<finalToken1<<endl;
+    divide();
+    cout<<finalToken2<<endl;
+
+    int cost=editDistDP(finalToken1,finalToken1,finalToken1.length(),finalToken2.length());//finding cost for the conversion
+    int num=finalToken2.length()-cost;
+    int den=finalToken2.length();
+
+    printDeclaration("Resultant Plagiarism Percentage");
+    double plgPercent=plagiarismCalculator(den,num); //Find the extent of plagiarism in form of
+                                                     //percentage between the two codes.
+    cout<<plgPercent<<" %\n";        //Outputting final result
 
     return 0;
 }
